@@ -24,7 +24,7 @@
 4. Потом на VDS пишите bash install.sh
 5. На ПК открываете build.py. У вас появится файл client.exe, чтобы заразить компьютер нужно кидать его 
 ```
-# Демонстрация
+# Демонстрация:
 
 <img width="525" alt="Снимок экрана 2022-07-29 082143" src="https://user-images.githubusercontent.com/102496559/181713284-14b85f96-1fc5-49da-a3f5-2b2449f1e95a.png">
 <img width="525" alt="ыфв" src="https://user-images.githubusercontent.com/102496559/181713288-14afa453-cced-4d72-a41d-04c3700ec516.png">
