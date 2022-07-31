@@ -7,6 +7,7 @@
 |     Screen     |        Скриншот экрана жертвы        | Screen [Ip Жертвы/all] |
 |     Webcam     |         Скриншот с вебкамеры         | Webcam [Ip Жертвы/all] |
 |   Delete All   |       Удаляет почти все файлы        |  Dall [Ip Жертвы/all]  |
+|     Upload     |     Загружает файлы на ПК жертвы     | Upload [Ip Жертвы/all] |
 | Text To Speech |       Преобразует текст в речь       |  Tts [Ip Жертвы/all]   |
 |  Message Box   | Отправляет сообщение на экран жертвы | Msgbox [Ip Жертвы/all] |
 |     Shell      |     Выполняет консольные команды     | Shell [Ip Жертвы/all]  |
